@@ -29,7 +29,7 @@ func TestHelloWorld(t *testing.T) {
 }
 
 func TestSum(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, sumPath, strings.NewReader(`{"a": 2, "b": 3.5}`))
+	req := httptest.NewRequest(http.MethodGet, sumPath+"?a=2&b=3.5", nil)
 	rec := httptest.NewRecorder()
 
 	newRouter().ServeHTTP(rec, req)
@@ -48,8 +48,8 @@ func TestSum(t *testing.T) {
 	}
 }
 
-func TestSumInvalidBody(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, sumPath, strings.NewReader(`not json`))
+func TestSumMissingParameter(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, sumPath+"?a=2", nil)
 	rec := httptest.NewRecorder()
 
 	newRouter().ServeHTTP(rec, req)
@@ -57,12 +57,41 @@ func TestSumInvalidBody(t *testing.T) {
 	if rec.Code != http.StatusBadRequest {
 		t.Fatalf("status = %d, want %d", rec.Code, http.StatusBadRequest)
 	}
+
+	var got errorResponse
+	if err := json.NewDecoder(rec.Body).Decode(&got); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+
+	if !strings.Contains(got.Error, "missing query parameter: b") {
+		t.Fatalf("error = %q, want it to contain %q", got.Error, "missing query parameter: b")
+	}
+}
+
+func TestSumInvalidParameter(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, sumPath+"?a=2&b=oops", nil)
+	rec := httptest.NewRecorder()
+
+	newRouter().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusBadRequest)
+	}
+
+	var got errorResponse
+	if err := json.NewDecoder(rec.Body).Decode(&got); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+
+	if !strings.Contains(got.Error, "invalid query parameter: b") {
+		t.Fatalf("error = %q, want it to contain %q", got.Error, "invalid query parameter: b")
+	}
 }
 
 // TestMethodNotAllowedSetsAllowHeader documents that the mux advertises the
 // supported verbs on a 405, without any handler-level validation code.
 func TestMethodNotAllowedSetsAllowHeader(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, helloWorldPath, nil)
+	req := httptest.NewRequest(http.MethodPost, sumPath, strings.NewReader(``))
 	rec := httptest.NewRecorder()
 
 	newRouter().ServeHTTP(rec, req)
