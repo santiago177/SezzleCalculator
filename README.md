@@ -1,7 +1,8 @@
 # About this branch
 
-This branch contains the commits used to run a brief POC of consuming a Go endpoint using a React page
+Make a very simple POC of running the frontend and server created in the previous branches using Docker
 
-- This branch was made on top of the previous POC creating a few services in Go
-- This implements a simple frontend page to sum two numbers by calling an endpoint
-- I did run a POC of the Vitest unit tests too
+- This branch was made on top of the previous POC creating the frontend
+- Run `docker build -t calculator . ` to build
+- Then run `docker build -t calculator .` to run the container
+- You can test the server in http://localhost:8080/ afterwards

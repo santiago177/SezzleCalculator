@@ -1,0 +1,22 @@
+# Node
+frontend/node_modules
+frontend/dist
+
+# Go build output
+server
+*.exe
+
+# Editor / VCS
+.git
+.idea
+.vscode
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Docs & AI prompts (not needed in the image)
+ai
+README.md
+frontend/README.md
+
