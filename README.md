@@ -1,7 +1,7 @@
 # About this branch
 
-This is a simple setup that I used to test Go HTTP services and unit tests.
+This branch contains the commits used to run a brief POC of consuming a Go endpoint using a React page
 
-- I did this using GitHub Copilot in Goland
-- I have some of the instruction prompts that I used in the `.github/prompts` folder
-- I also created a `chatlogs` folder with the chat logs of the prompts and answers that I used to create this service.
+- This branch was made on top of the previous POC creating a few services in Go
+- This implements a simple frontend page to sum two numbers by calling an endpoint
+- I did run a POC of the Vitest unit tests too
