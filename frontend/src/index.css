@@ -1,0 +1,27 @@
+:root {
+  --bg: #e9eef3;
+
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: light dark;
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111214;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
