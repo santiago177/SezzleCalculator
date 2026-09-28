@@ -1,0 +1,172 @@
+.calculator {
+  --calc-bg: #f3f3f3;
+  --calc-text: #1a1a1a;
+  --calc-muted: #616161;
+  --btn-digit: #ffffff;
+  --btn-digit-hover: #f6f6f6;
+  --btn-func: #f9f9f9;
+  --btn-func-hover: #efefef;
+  --btn-active: #e8e8e8;
+  --btn-border: rgba(0, 0, 0, 0.06);
+  --accent: #005fb8;
+  --accent-hover: #1a6fc0;
+  --accent-active: #3380cb;
+  --accent-text: #ffffff;
+
+  /*
+   * The only size that is set: as wide as possible, up to 400px, but never
+   * taller than the viewport (minus the 48px of page padding). Everything
+   * inside scales with this width through container query units (cqw).
+   */
+  width: min(100%, 400px, calc((100svh - 48px) * 320 / 440));
+  aspect-ratio: 320 / 440;
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 4px 4px;
+  box-sizing: border-box;
+  background: var(--calc-bg);
+  color: var(--calc-text);
+  border-radius: 8px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+  user-select: none;
+  text-align: left;
+}
+
+@media (prefers-color-scheme: dark) {
+  .calculator {
+    --calc-bg: #202020;
+    --calc-text: #ffffff;
+    --calc-muted: #a0a0a0;
+    --btn-digit: #3b3b3b;
+    --btn-digit-hover: #323232;
+    --btn-func: #323232;
+    --btn-func-hover: #3b3b3b;
+    --btn-active: #282828;
+    --btn-border: rgba(255, 255, 255, 0.06);
+    --accent: #4cc2ff;
+    --accent-hover: #48b1e8;
+    --accent-active: #42a1d2;
+    --accent-text: #000000;
+  }
+}
+
+.calc-header {
+  padding: 4px 12px 0;
+  font-size: 6cqw;
+  font-weight: 600;
+}
+
+.calc-screen {
+  flex: none;
+  padding: 12px 12px 8px;
+  text-align: right;
+  overflow: hidden;
+}
+
+.calc-expression {
+  min-height: 1.4em;
+  font-size: 4.4cqw;
+  color: var(--calc-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calc-display {
+  font-size: 14cqw;
+  font-weight: 600;
+  /*
+   * Fixed line box based on the largest font size (14cqw * 1.25), so the
+   * display keeps the same height when --medium / --small shrink the text.
+   */
+  height: 17.5cqw;
+  line-height: 17.5cqw;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.calc-display--medium {
+  font-size: 11cqw;
+}
+
+.calc-display--small {
+  font-size: 8.5cqw;
+}
+
+.calc-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* Rows share the height left after the header and screen */
+  grid-template-rows: repeat(6, 1fr);
+  gap: 2px;
+}
+
+.calc-btn {
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 4.7cqw;
+  color: var(--calc-text);
+  cursor: pointer;
+  transition: background-color 80ms ease;
+}
+
+.calc-btn:focus-visible {
+  outline: 2px solid var(--calc-text);
+  outline-offset: -2px;
+}
+
+.calc-btn--wide {
+  grid-column: span 2;
+}
+
+.calc-btn--digit {
+  background: var(--btn-digit);
+  font-size: 6.25cqw;
+  font-weight: 600;
+}
+
+.calc-btn--digit:hover {
+  background: var(--btn-digit-hover);
+}
+
+.calc-btn--function,
+.calc-btn--operator {
+  background: var(--btn-func);
+}
+
+.calc-btn--operator {
+  font-size: 6.25cqw;
+}
+
+.calc-btn--function:hover,
+.calc-btn--operator:hover {
+  background: var(--btn-func-hover);
+}
+
+.calc-btn--digit:active,
+.calc-btn--function:active,
+.calc-btn--operator:active {
+  background: var(--btn-active);
+  color: var(--calc-muted);
+}
+
+.calc-btn--equals {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 6.25cqw;
+}
+
+.calc-btn--equals:hover {
+  background: var(--accent-hover);
+}
+
+.calc-btn--equals:active {
+  background: var(--accent-active);
+}
