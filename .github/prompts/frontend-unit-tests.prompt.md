@@ -1,0 +1,12 @@
+# Instructions
+- Generate unit tests for the frontend
+- Make the unit tests using Vitest
+- Make tests that include:
+    - When a number is clicked the screen is updated with the number
+    - The screen starts at 0
+    - Equals button calls an endpoint if an operator was present
+    - Clicking an operator button adds the operator to the screen if there was no operator before
+    - Clicking an operator button calls the respecting endpoint and updates the screen with the result
+    - Remove button removes digits how it's supposed to
+    - CE clears entry and C clears all
+    - If the endpoint returns an error it should display Error on screen
