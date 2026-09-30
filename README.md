@@ -127,6 +127,7 @@ To run the project without docker you need Go 1.27.1 and npm
 - The percentage operator is a strange one which I never use in the calculator because it requires to have an operator before it. As the requirements didn't specify the behavior of the percentage operator. I decided to keep it simple and treat it as `a / 100 * b`. This can be refactored to replicate the behavior of the Windows calculator, but it's a bit more complicated
 - If the operation is invalid or the request to the endpoint fails, the calculator will show an `Error` message
 - I decided to make unit tests for `calculator.go` as it took little effort to do, but these tests are in some way repetition of the tests in `handlers_test.go`
+- The LLM generated code for keyboard support which I decided to leave there as it is working well.
 
 # Test coverage results
 
