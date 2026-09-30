@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+ai
+**/node_modules
+frontend/dist
+**/*_test.go
+Dockerfile
+.dockerignore
+
