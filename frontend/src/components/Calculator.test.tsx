@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Calculator from './Calculator'
@@ -87,6 +87,25 @@ describe('Calculator', () => {
       const { press } = setup()
       await press('1', 'Decimal separator', '5', 'Decimal separator', '2')
       expect(display()).toHaveTextContent(/^1\.52$/)
+    })
+
+    it('starts a new number with "0." when the decimal is pressed after an operator', async () => {
+      const { press } = setup()
+      await press('1', '2', 'Add', 'Decimal separator', '5')
+      expect(display()).toHaveTextContent(/^0\.5$/)
+      expect(expression()).toHaveTextContent('12 +')
+    })
+
+    it('starts a new calculation with "0." when the decimal is pressed after a result', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(10))
+      const { press } = setup()
+
+      await press('7', 'Add', '3', 'Equals')
+      await waitFor(() => expect(display()).toHaveTextContent(/^10$/))
+      await press('Decimal separator')
+
+      expect(display()).toHaveTextContent(/^0\.$/)
+      expect(expression().textContent?.trim()).toBe('')
     })
   })
 
@@ -261,6 +280,32 @@ describe('Calculator', () => {
       expect(expression()).toHaveTextContent('7 =')
     })
 
+    it('appends "=" to the expression after a square root without calling the API again', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(4))
+      const { press } = setup()
+
+      await press('1', '6', 'Square root')
+      await waitFor(() => expect(display()).toHaveTextContent(/^4$/))
+      await press('Equals')
+
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+      expect(display()).toHaveTextContent(/^4$/)
+      expect(expression()).toHaveTextContent('√(16) =')
+    })
+
+    it('shows only the current value when equals is pressed twice', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(10))
+      const { press } = setup()
+
+      await press('7', 'Add', '3', 'Equals')
+      await waitFor(() => expect(display()).toHaveTextContent(/^10$/))
+      await press('Equals')
+
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+      expect(display()).toHaveTextContent(/^10$/)
+      expect(expression()).toHaveTextContent(/^10 =$/)
+    })
+
     it('starts a new calculation when a digit is clicked after the result', async () => {
       fetchMock.mockResolvedValueOnce(okResponse(10))
       const { press } = setup()
@@ -378,5 +423,133 @@ describe('Calculator', () => {
       expect(expression().textContent?.trim()).toBe('')
     })
   })
-})
 
+  describe('keyboard', () => {
+    it('types digits', async () => {
+      const { user } = setup()
+      await user.keyboard('123')
+      expect(display()).toHaveTextContent(/^123$/)
+    })
+
+    it('uses "." as decimal separator', async () => {
+      const { user } = setup()
+      await user.keyboard('1.5')
+      expect(display()).toHaveTextContent(/^1\.5$/)
+    })
+
+    it('uses "," as decimal separator', async () => {
+      const { user } = setup()
+      await user.keyboard('1,5')
+      expect(display()).toHaveTextContent(/^1\.5$/)
+    })
+
+    it('"+" calls the sum endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(10))
+      const { user } = setup()
+
+      await user.keyboard('7+3{Enter}')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^10$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/sum', a: '7', b: '3' })
+    })
+
+    it('"-" calls the subtraction endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(4))
+      const { user } = setup()
+
+      await user.keyboard('7-3{Enter}')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^4$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/subtraction', a: '7', b: '3' })
+    })
+
+    it('"*" calls the multiplication endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(21))
+      const { user } = setup()
+
+      await user.keyboard('7*3{Enter}')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^21$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/multiplication', a: '7', b: '3' })
+    })
+
+    it('"/" calls the division endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(2))
+      const { user } = setup()
+
+      await user.keyboard('6/3{Enter}')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^2$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/division', a: '6', b: '3' })
+    })
+
+    it('"^" calls the exponentiation endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(8))
+      const { user } = setup()
+
+      await user.keyboard('2^3{Enter}')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^8$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/exponentiation', a: '2', b: '3' })
+    })
+
+    it('"%" calls the percentage endpoint', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(0.1))
+      const { user } = setup()
+
+      await user.keyboard('10%')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^0\.1$/))
+      expect(fetchCall()).toEqual({ path: '/api/v1/percentage', a: '10', b: '1' })
+    })
+
+    it('"=" works as equals', async () => {
+      fetchMock.mockResolvedValueOnce(okResponse(10))
+      const { user } = setup()
+
+      await user.keyboard('7+3=')
+
+      await waitFor(() => expect(display()).toHaveTextContent(/^10$/))
+      expect(expression()).toHaveTextContent('7 + 3 =')
+    })
+
+    it('Backspace removes the last digit', async () => {
+      const { user } = setup()
+      await user.keyboard('123{Backspace}')
+      expect(display()).toHaveTextContent(/^12$/)
+    })
+
+    it('Escape clears everything', async () => {
+      const { user } = setup()
+      await user.keyboard('12+3{Escape}')
+      expect(display()).toHaveTextContent(/^0$/)
+      expect(expression().textContent?.trim()).toBe('')
+    })
+
+    it('Delete clears only the current entry', async () => {
+      const { user } = setup()
+      await user.keyboard('12+34{Delete}')
+      expect(display()).toHaveTextContent(/^0$/)
+      expect(expression()).toHaveTextContent('12 +')
+    })
+
+    it('ignores unsupported keys', async () => {
+      const { user } = setup()
+      await user.keyboard('a')
+      expect(display()).toHaveTextContent(/^0$/)
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    it('prevents the default browser action for handled keys', () => {
+      setup()
+      const notPrevented = fireEvent.keyDown(window, { key: '5' })
+      expect(notPrevented).toBe(false)
+    })
+
+    it('does not prevent the default browser action for unsupported keys', () => {
+      setup()
+      const notPrevented = fireEvent.keyDown(window, { key: 'a' })
+      expect(notPrevented).toBe(true)
+    })
+  })
+})

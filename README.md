@@ -148,62 +148,83 @@ Run `px vitest run --coverage` in the `frontend` directory, the test coverage is
  RUN  v4.1.11 C:/Users/santi/GolandProjects/sezzleCalculator/frontend
       Coverage enabled with v8
 
- ✓ src/components/Calculator.test.tsx (31 tests) 8122ms
-   ✓ Calculator (31)
+ ✓ src/components/Calculator.test.tsx (51 tests) 10918ms
+   ✓ Calculator (51)
      ✓ initial state (1)
-       ✓ starts with 0 on the screen 20ms
-     ✓ number input (4)
-       ✓ updates the screen with the clicked number 127ms
-       ✓ appends consecutive digits 165ms
-       ✓ replaces the leading zero 198ms
-       ✓ supports the decimal separator only once  344ms
+       ✓ starts with 0 on the screen 22ms
+     ✓ number input (6)
+       ✓ updates the screen with the clicked number 94ms
+       ✓ appends consecutive digits 196ms
+       ✓ replaces the leading zero 173ms
+       ✓ supports the decimal separator only once  365ms
+       ✓ starts a new number with "0." when the decimal is pressed after an operator  360ms
+       ✓ starts a new calculation with "0." when the decimal is pressed after a result  350ms
      ✓ operators (9)
-       ✓ adds the operator to the screen when no operator was present 191ms
-       ✓ replaces the operator when clicked twice in a row without calling the API 267ms
-       ✓ starts a new number after an operator 282ms
+       ✓ adds the operator to the screen when no operator was present 222ms
+       ✓ replaces the operator when clicked twice in a row without calling the API 253ms
+       ✓ starts a new number after an operator 284ms
        ✓ chaining (6)
-         ✓ calls the sum endpoint after Add and shows the result 253ms
-         ✓ calls the subtraction endpoint after Subtract and shows the result 238ms
-         ✓ calls the multiplication endpoint after Multiply and shows the result 250ms
-         ✓ calls the division endpoint after Divide and shows the result 236ms
-         ✓ calls the exponentiation endpoint after Power and shows the result 269ms
-         ✓ uses the chained result as the left operand of the next operation  393ms
+         ✓ calls the sum endpoint after Add and shows the result 286ms
+         ✓ calls the subtraction endpoint after Subtract and shows the result 268ms
+         ✓ calls the multiplication endpoint after Multiply and shows the result 254ms
+         ✓ calls the division endpoint after Divide and shows the result 267ms
+         ✓ calls the exponentiation endpoint after Power and shows the result 286ms
+         ✓ uses the chained result as the left operand of the next operation  459ms
      ✓ square root (2)
-       ✓ calls the squareroot endpoint and shows the result 207ms
-       ✓ shows Error when the squareroot endpoint responds with an error 142ms
+       ✓ calls the squareroot endpoint and shows the result 218ms
+       ✓ shows Error when the squareroot endpoint responds with an error 140ms
      ✓ percentage (2)
-       ✓ converts a number to its fraction when no operation is pending 203ms
-       ✓ uses the left operand as the base after Add  475ms
-     ✓ equals (3)
-       ✓ calls the endpoint when an operator is present and shows the result 250ms
-       ✓ does not call any endpoint when no operator is present 128ms
-       ✓ starts a new calculation when a digit is clicked after the result  330ms
+       ✓ converts a number to its fraction when no operation is pending 240ms
+       ✓ uses the left operand as the base after Add  488ms
+     ✓ equals (5)
+       ✓ calls the endpoint when an operator is present and shows the result 284ms
+       ✓ does not call any endpoint when no operator is present 142ms
+       ✓ appends "=" to the expression after a square root without calling the API again 269ms
+       ✓ shows only the current value when equals is pressed twice  316ms
+       ✓ starts a new calculation when a digit is clicked after the result  329ms
      ✓ backspace (4)
-       ✓ removes the last digit 238ms
-       ✓ goes back to 0 after removing every digit  329ms
-       ✓ does not remove digits from a number that was not typed by the user 266ms
-       ✓ does not modify a result, only clears the expression  310ms
+       ✓ removes the last digit 255ms
+       ✓ goes back to 0 after removing every digit  313ms
+       ✓ does not remove digits from a number that was not typed by the user 238ms
+       ✓ does not modify a result, only clears the expression  334ms
      ✓ clear (2)
-       ✓ CE clears only the current entry and keeps the pending operation  503ms
-       ✓ C clears everything including the pending operation  410ms
+       ✓ CE clears only the current entry and keeps the pending operation  552ms
+       ✓ C clears everything including the pending operation  460ms
      ✓ errors (4)
-       ✓ shows Error when the endpoint responds with an error on equals 254ms
-       ✓ shows Error when the endpoint responds with an error on a chained operator 271ms
-       ✓ shows Error when the request fails 256ms
-       ✓ starts over when a digit is clicked after an error  314ms
+       ✓ shows Error when the endpoint responds with an error on equals 236ms
+       ✓ shows Error when the endpoint responds with an error on a chained operator 253ms
+       ✓ shows Error when the request fails 237ms
+       ✓ starts over when a digit is clicked after an error  302ms
+     ✓ keyboard (16)
+       ✓ types digits 79ms
+       ✓ uses "." as decimal separator 63ms
+       ✓ uses "," as decimal separator 80ms
+       ✓ "+" calls the sum endpoint 94ms
+       ✓ "-" calls the subtraction endpoint 77ms
+       ✓ "*" calls the multiplication endpoint 95ms
+       ✓ "/" calls the division endpoint 80ms
+       ✓ "^" calls the exponentiation endpoint 76ms
+       ✓ "%" calls the percentage endpoint 96ms
+       ✓ "=" works as equals 77ms
+       ✓ Backspace removes the last digit 79ms
+       ✓ Escape clears everything 112ms
+       ✓ Delete clears only the current entry 113ms
+       ✓ ignores unsupported keys 45ms
+       ✓ prevents the default browser action for handled keys 3ms
+       ✓ does not prevent the default browser action for unsupported keys 1ms
 
  Test Files  1 passed (1)
-      Tests  31 passed (31)
-   Start at  20:41:45
-   Duration  16.98s (transform 62ms, setup 1.06s, import 1.35s, tests 8.12s, environment 6.04s)
+      Tests  51 passed (51)
+   Start at  21:31:24
+   Duration  11.60s (transform 42ms, setup 63ms, import 137ms, tests 10.92s, environment 321ms)
 
  % Coverage report from v8
-----------------|---------|----------|---------|---------|---------------------
-File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s   
-----------------|---------|----------|---------|---------|---------------------
-All files       |   78.08 |    58.41 |   96.96 |   86.66 |                     
- Calculator.css |       0 |        0 |       0 |       0 |                     
- Calculator.tsx |   78.08 |    58.41 |   96.96 |   86.66 | 101-104,175,224-238 
-----------------|---------|----------|---------|---------|---------------------
+----------------|---------|----------|---------|---------|-------------------------------
+File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s             
+----------------|---------|----------|---------|---------|-------------------------------
+All files       |   96.62 |    91.08 |     100 |     100 |                               
+ Calculator.css |       0 |        0 |       0 |       0 |                               
+ Calculator.tsx |   96.62 |    91.08 |     100 |     100 | 49,92,111,144,150,169,199,292 
+----------------|---------|----------|---------|---------|-------------------------------
 ```
 
